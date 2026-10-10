@@ -21,6 +21,7 @@ export function App() {
   const [cart, setCart] = useState([])
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
   const [latestOrder, setLatestOrder] = useState(null)
+  const [emailStatus, setEmailStatus] = useState(null)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
 
   // Cart operations
@@ -53,10 +54,11 @@ export function App() {
     const savedOrder = orderResult.order
 
     // 2. Dispatch full order details to sandhucosmetics1@gmail.com
-    await sendOrderToGmail({
+    const mailResult = await sendOrderToGmail({
       ...orderPayload,
       id: savedOrder.id,
     })
+    setEmailStatus(mailResult)
 
     // Confetti celebration
     try {
@@ -204,6 +206,7 @@ export function App() {
 
       <OrderSuccessModal
         order={latestOrder}
+        emailStatus={emailStatus}
         onClose={() => setIsSuccessModalOpen(false)}
       />
 

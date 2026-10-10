@@ -5,7 +5,7 @@ export async function sendOrderToGmail(order) {
     .map((item, index) => `${index + 1}. ${item.name} x ${item.quantity} (Rs. ${item.price} each = Rs. ${item.price * item.quantity})`)
     .join('\n')
 
-  const emailSubject = `🍽️ New Order #${order.id ? order.id.slice(0, 8) : 'ORD-' + Date.now().toString().slice(-5)} - ${order.name} (Rs. ${order.total.toLocaleString()})`
+  const emailSubject = `🍽️ New Order #${order.id ? (typeof order.id === 'string' && order.id.length > 8 ? order.id.slice(0, 8).toUpperCase() : order.id) : 'ORD-' + Date.now().toString().slice(-5)} - ${order.name} (Rs. ${order.total.toLocaleString()})`
 
   const payload = {
     _subject: emailSubject,
@@ -16,13 +16,13 @@ export async function sendOrderToGmail(order) {
     'Customer Name': order.name,
     'Customer Phone': order.phone,
     'Delivery Address': order.address,
-    'Ordered Dishes & Quantity': itemsText,
-    'Total Dishes Ordered': order.items.reduce((sum, i) => sum + i.quantity, 0),
-    'Order Subtotal': `Rs. ${order.subtotal ? order.subtotal.toLocaleString() : order.total.toLocaleString()}`,
-    'Delivery Fee': order.deliveryFee ? `Rs. ${order.deliveryFee}` : 'Free Delivery',
+    'Special Cooking Notes': order.notes || 'None',
+    'Ordered Dishes': itemsText,
+    'Total Dishes Count': order.items.reduce((sum, i) => sum + i.quantity, 0),
+    'Food Subtotal': `Rs. ${order.subtotal ? order.subtotal.toLocaleString() : order.total.toLocaleString()} PKR`,
+    'Delivery Charges': order.deliveryFee ? `Rs. ${order.deliveryFee} PKR` : 'Free Delivery',
     'Grand Total Amount': `Rs. ${order.total.toLocaleString()} PKR`,
-    'Order Status': 'Pending',
-    'Customer Notes': order.notes || 'None',
+    'Payment Method': 'Cash on Delivery',
     'Order Placed At': new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' }) + ' (PKT)',
   }
 
@@ -37,14 +37,21 @@ export async function sendOrderToGmail(order) {
     })
 
     const data = await response.json()
+    
+    // Check if FormSubmit is waiting for 1-time user email activation
+    const isNeedsActivation = data && data.message && (
+      data.message.toLowerCase().includes('activation') ||
+      data.message.toLowerCase().includes('activate')
+    )
+
     return {
-      success: true,
-      message: 'Order email dispatched to ' + TARGET_GMAIL,
+      success: data.success === 'true' || data.success === true,
+      needsActivation: Boolean(isNeedsActivation),
+      message: data.message || 'Order email dispatched',
       data,
     }
   } catch (err) {
-    console.warn('Primary email dispatch issue, falling back to backup formsubmit endpoint:', err)
-    // Fallback: try urlencoded form submit
+    console.warn('FormSubmit AJAX dispatch issue, attempting standard form POST:', err)
     try {
       const formData = new FormData()
       Object.entries(payload).forEach(([k, v]) => formData.append(k, String(v)))
@@ -55,29 +62,31 @@ export async function sendOrderToGmail(order) {
       })
       return {
         success: true,
+        needsActivation: false,
         message: 'Order email dispatched via fallback to ' + TARGET_GMAIL,
       }
     } catch (fallbackErr) {
       return {
         success: false,
+        needsActivation: false,
         error: fallbackErr.message || 'Email dispatch failed',
       }
     }
   }
 }
 
-// Generate direct Gmail Web compose URL for 1-click verification or immediate screenshot
+// Generate direct Gmail Web compose URL with prefilled recipient and receipt
 export function getDirectGmailComposeUrl(order) {
-  const itemsText = order.items
+  const itemsText = (order.items || [])
     .map((item, idx) => `  ${idx + 1}. ${item.name} (Qty: ${item.quantity}) - Rs. ${(item.price * item.quantity).toLocaleString()}`)
     .join('\n')
 
-  const subject = encodeURIComponent(`🍽️ New Food Order #${order.id ? order.id.slice(0, 8) : 'ORD-NEW'} - ${order.name}`)
+  const subject = encodeURIComponent(`🍽️ New Food Order #${order.id ? (typeof order.id === 'string' && order.id.length > 8 ? order.id.slice(0, 8).toUpperCase() : order.id) : 'ORD-NEW'} - ${order.customer_name || order.name}`)
   const bodyText = `NEW FOOD ORDER RECEIVED AT ZAIKA ROYALE BISTRO
 --------------------------------------------------
-Customer Name:    ${order.name}
-Phone Number:     ${order.phone}
-Delivery Address: ${order.address}
+Customer Name:    ${order.customer_name || order.name}
+Phone Number:     ${order.customer_phone || order.phone}
+Delivery Address: ${order.customer_address || order.address}
 Special Notes:    ${order.notes || 'None'}
 Status:           Pending
 Time:             ${new Date().toLocaleString()}
@@ -86,7 +95,7 @@ ORDERED DISHES:
 ${itemsText}
 
 --------------------------------------------------
-TOTAL AMOUNT:     Rs. ${order.total.toLocaleString()} PKR
+TOTAL AMOUNT:     Rs. ${Number(order.total_amount || order.total).toLocaleString()} PKR
 PAYMENT METHOD:   Cash on Delivery
 --------------------------------------------------`
 
@@ -94,3 +103,7 @@ PAYMENT METHOD:   Cash on Delivery
   return `https://mail.google.com/mail/?view=cm&fs=1&to=${TARGET_GMAIL}&su=${subject}&body=${body}`
 }
 
+// Gmail search URL to find the activation email from FormSubmit
+export function getGmailSearchActivationUrl() {
+  return `https://mail.google.com/mail/u/0/#search/formsubmit`
+}
