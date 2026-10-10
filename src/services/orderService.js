@@ -166,7 +166,6 @@ export async function trackOrder(query) {
   const clean = query.trim()
   const cleanUpper = clean.toUpperCase()
 
-  // 1. Search in local storage cache first
   const localOrders = getLocalOrders()
   const localMatch = localOrders.find(o => {
     const refMatch = o.ref_id && o.ref_id.toUpperCase() === cleanUpper
@@ -178,7 +177,42 @@ export async function trackOrder(query) {
     return refMatch || idMatch || notesMatch || phoneMatch
   })
 
-  // 2. Query Supabase
+  // Helper to attach ref_id if missing
+  const enrichOrder = (ord) => {
+    if (!ord) return ord
+    let ref = ord.ref_id
+    if (!ref && ord.notes) {
+      const match = ord.notes.match(/\[Ref:\s*([A-Za-z0-9-]+)\]/i)
+      if (match && match[1]) ref = match[1]
+    }
+    if (!ref) {
+      ref = ord.id && ord.id.length > 8 ? 'ZR-' + ord.id.slice(0, 5).toUpperCase() : ord.id || 'ZR-ORDER'
+    }
+    return { ...ord, ref_id: ref }
+  }
+
+  // 1. If local match exists, attempt to pull latest live status from Supabase
+  if (localMatch && localMatch.id && !localMatch.id.startsWith('local-')) {
+    try {
+      const { data: remoteData } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', localMatch.id)
+        .maybeSingle()
+
+      if (remoteData) {
+        const enriched = enrichOrder({ ...localMatch, ...remoteData })
+        // Update local cache with latest status from database
+        const updated = localOrders.map(o => (o.id === enriched.id ? enriched : o))
+        saveLocalOrders(updated)
+        return enriched
+      }
+    } catch (err) {
+      console.warn('Supabase fetch by ID error:', err)
+    }
+  }
+
+  // 2. Query Supabase directly by UUID or search pattern
   try {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clean)
     if (isUuid) {
@@ -187,22 +221,28 @@ export async function trackOrder(query) {
         .select('*')
         .eq('id', clean)
         .maybeSingle()
-      if (data) return data
+      if (data) {
+        return enrichOrder(data)
+      }
     }
 
-    // Try search in Supabase by notes (which contains Ref ID) or phone
+    // Try search in Supabase by notes (containing Ref ID) or customer phone
     const { data: searchResults } = await supabase
       .from('orders')
       .select('*')
       .or(`notes.ilike.%${clean}%,customer_phone.ilike.%${clean}%`)
+      .order('created_at', { ascending: false })
       .limit(1)
 
     if (searchResults && searchResults.length > 0) {
-      return searchResults[0]
+      const enriched = enrichOrder(searchResults[0])
+      // cache locally
+      saveLocalOrders([enriched, ...localOrders.filter(o => o.id !== enriched.id)])
+      return enriched
     }
   } catch (err) {
     console.warn('Supabase query error in trackOrder:', err)
   }
 
-  return localMatch || null
+  return localMatch ? enrichOrder(localMatch) : null
 }

@@ -87,29 +87,92 @@ export function TrackOrderModal({ isOpen, onClose, initialQuery = '' }) {
   // Pre-load recent local order if available
   const recentOrders = getLocalOrders().slice(0, 3)
 
+  // Auto-refresh order status every 5 seconds while modal is open to catch live admin changes
+  useEffect(() => {
+    if (!isOpen || !searchedOrder) return
+    const q = searchQuery || initialQuery
+    if (!q) return
+
+    const interval = setInterval(async () => {
+      try {
+        const fresh = await trackOrder(q)
+        if (fresh) {
+          setSearchedOrder(fresh)
+        }
+      } catch (err) {
+        // silent polling catch
+      }
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [isOpen, searchedOrder?.id, searchQuery, initialQuery])
+
   // Map order status to progress steps
+  // 0: Order Confirmed
+  // 1: In The Kitchen
+  // 2: Out For Delivery
+  // 3: Delivered
+  const getActiveStepIndex = (orderStatus) => {
+    const s = (orderStatus || 'Pending').toLowerCase().trim()
+    if (s === 'delivered') return 3
+    if (s === 'out for delivery' || s === 'on the way' || s === 'dispatched') return 2
+    if (s === 'preparing' || s === 'in kitchen' || s === 'kitchen') return 1
+    // Pending / Order Confirmed
+    return 0
+  }
+
   const getStepStatus = (orderStatus, stepIndex) => {
-    // 0: Order Placed, 1: Kitchen, 2: On The Way, 3: Delivered
-    const s = (orderStatus || 'Pending').toLowerCase()
+    const s = (orderStatus || 'Pending').toLowerCase().trim()
+    if (s === 'cancelled') return 'cancelled'
+
+    const activeIdx = getActiveStepIndex(orderStatus)
+
     if (s === 'delivered') {
       return 'completed'
     }
-    if (s === 'preparing') {
-      if (stepIndex <= 1) return 'completed'
-      if (stepIndex === 2) return 'current'
-      return 'upcoming'
+
+    if (stepIndex < activeIdx) {
+      return 'completed'
     }
-    // Pending
-    if (stepIndex === 0) return 'completed'
-    if (stepIndex === 1) return 'current'
+    if (stepIndex === activeIdx) {
+      return 'current'
+    }
     return 'upcoming'
   }
 
   const steps = [
-    { title: 'Order Confirmed', desc: 'Received & routed to kitchen', icon: CheckCircle2 },
-    { title: 'In The Kitchen', desc: 'Charcoal grill & tandoor underway', icon: Flame },
-    { title: 'Out For Delivery', desc: 'Rider dispatched with thermal box', icon: Truck },
-    { title: 'Delivered', desc: 'Delivered hot to your door', icon: PackageCheck },
+    {
+      title: 'Order Confirmed',
+      desc: 'Received & queued for master chef',
+      icon: CheckCircle2,
+      activeColor: 'text-emerald-400',
+      activeBorder: 'border-emerald-500/60 ring-1 ring-emerald-500/40 bg-emerald-950/30',
+      activeBadge: '● Confirmed',
+    },
+    {
+      title: 'In The Kitchen',
+      desc: 'Clay tandoor & wooden charcoal grill',
+      icon: Flame,
+      activeColor: 'text-amber-400',
+      activeBorder: 'border-amber-500/60 ring-1 ring-amber-500/40 bg-amber-950/35',
+      activeBadge: '● Grilling Live',
+    },
+    {
+      title: 'Out For Delivery',
+      desc: 'Dispatched in insulated heat bag',
+      icon: Truck,
+      activeColor: 'text-blue-400',
+      activeBorder: 'border-blue-500/60 ring-1 ring-blue-500/40 bg-blue-950/35',
+      activeBadge: '● On The Road',
+    },
+    {
+      title: 'Delivered',
+      desc: 'Served piping hot at your door',
+      icon: PackageCheck,
+      activeColor: 'text-emerald-400',
+      activeBorder: 'border-emerald-500/60 ring-1 ring-emerald-500/40 bg-emerald-950/35',
+      activeBadge: '✓ Delivered',
+    },
   ]
 
   const refDisplay = searchedOrder?.ref_id || (searchedOrder?.id ? (typeof searchedOrder.id === 'string' && searchedOrder.id.length > 8 ? searchedOrder.id.slice(0, 8).toUpperCase() : searchedOrder.id) : 'ZR-ORDER')
@@ -247,45 +310,103 @@ export function TrackOrderModal({ isOpen, onClose, initialQuery = '' }) {
               </div>
 
               {/* Progress Milestones Tracker */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-4">
-                <h4 className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
-                  Live Preparation &amp; Delivery Progress
-                </h4>
+              {(() => {
+                const activeStepIdx = getActiveStepIndex(searchedOrder.status)
+                const isDelivered = (searchedOrder.status || '').toLowerCase() === 'delivered'
+                const progressPercent = isDelivered ? 100 : (activeStepIdx === 0 ? 25 : activeStepIdx === 1 ? 50 : 75)
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {steps.map((step, idx) => {
-                    const stepState = getStepStatus(searchedOrder.status, idx)
-                    const Icon = step.icon
-
-                    return (
-                      <div
-                        key={idx}
-                        className={`p-3.5 rounded-xl border flex flex-col justify-between space-y-2 transition ${
-                          stepState === 'completed'
-                            ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-300'
-                            : stepState === 'current'
-                            ? 'bg-amber-950/40 border-amber-500/50 text-amber-300 ring-1 ring-amber-500/30 animate-pulse'
-                            : 'bg-neutral-900/50 border-neutral-800 text-neutral-500'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <Icon className={`w-5 h-5 ${stepState === 'completed' ? 'text-emerald-400' : stepState === 'current' ? 'text-amber-400' : 'text-neutral-600'}`} />
-                          <span className="text-[10px] font-mono font-bold">0{idx + 1}</span>
-                        </div>
-
-                        <div>
-                          <p className={`text-xs font-bold ${stepState === 'upcoming' ? 'text-neutral-500' : 'text-white'}`}>
-                            {step.title}
-                          </p>
-                          <p className="text-[10px] text-neutral-400 mt-0.5 leading-tight">
-                            {step.desc}
-                          </p>
-                        </div>
+                return (
+                  <div className="p-5 sm:p-6 rounded-2xl bg-neutral-950 border border-neutral-800 space-y-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <h4 className="text-xs font-bold text-neutral-300 uppercase tracking-wider">
+                          Live Preparation &amp; Delivery Progress
+                        </h4>
+                        <p className="text-[11px] text-amber-400 font-semibold mt-0.5">
+                          {isDelivered
+                            ? 'Order Delivered! Thank you for choosing Zaika Royale.'
+                            : activeStepIdx === 2
+                            ? 'Rider is on the way with your hot meal.'
+                            : activeStepIdx === 1
+                            ? 'Master Chef is grilling & cooking in the kitchen.'
+                            : 'Order Confirmed & Queued for Kitchen.'}
+                        </p>
                       </div>
-                    )
-                  })}
-                </div>
-              </div>
+
+                      <span className="text-[11px] font-mono font-bold text-neutral-400">
+                        {progressPercent}% Complete
+                      </span>
+                    </div>
+
+                    {/* Horizontal Progress Bar */}
+                    <div className="w-full h-2 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800">
+                      <div
+                        className="h-full bg-gradient-to-r from-amber-500 via-orange-500 to-emerald-500 rounded-full transition-all duration-700 ease-out"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {steps.map((step, idx) => {
+                        const stepState = getStepStatus(searchedOrder.status, idx)
+                        const Icon = step.icon
+
+                        return (
+                          <div
+                            key={idx}
+                            className={`p-3.5 sm:p-4 rounded-2xl border flex flex-col justify-between space-y-3 transition duration-300 relative overflow-hidden ${
+                              stepState === 'completed'
+                                ? 'bg-emerald-950/20 border-emerald-500/40 text-emerald-300'
+                                : stepState === 'current'
+                                ? `${step.activeBorder} text-white shadow-lg`
+                                : 'bg-neutral-900/30 border-neutral-800/80 text-neutral-500 opacity-60'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                                stepState === 'completed'
+                                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                                  : stepState === 'current'
+                                  ? 'bg-neutral-900 text-amber-400 border border-amber-500/40'
+                                  : 'bg-neutral-900 border border-neutral-800 text-neutral-600'
+                              }`}>
+                                {stepState === 'completed' ? (
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                ) : (
+                                  <Icon className={`w-4 h-4 ${stepState === 'current' ? step.activeColor : 'text-neutral-600'}`} />
+                                )}
+                              </div>
+
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${
+                                stepState === 'completed'
+                                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                                  : stepState === 'current'
+                                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black animate-pulse'
+                                  : 'bg-neutral-900 text-neutral-600 border border-neutral-800'
+                              }`}>
+                                {stepState === 'completed' ? '✓ Done' : stepState === 'current' ? '● Active' : `0${idx + 1}`}
+                              </span>
+                            </div>
+
+                            <div>
+                              <p className={`text-xs font-bold ${
+                                stepState === 'completed' ? 'text-emerald-300' : stepState === 'current' ? 'text-white' : 'text-neutral-500'
+                              }`}>
+                                {step.title}
+                              </p>
+                              <p className={`text-[10px] mt-1 leading-tight ${
+                                stepState === 'current' ? 'text-neutral-300' : 'text-neutral-500'
+                              }`}>
+                                {step.desc}
+                              </p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })()}
 
               {/* Order Details Accordion / Summary */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
