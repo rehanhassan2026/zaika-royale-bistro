@@ -54,7 +54,7 @@ export function OrderFormModal({ isOpen, onClose, cart, onUpdateQuantity, onAddT
     }
 
     try {
-      setProgressStep('Dispatching order to ' + TARGET_GMAIL + ' and Supabase...')
+      setProgressStep('Confirming your order...')
       await onOrderPlaced(orderData)
       // reset form
       setCustomerName('')
@@ -94,7 +94,7 @@ export function OrderFormModal({ isOpen, onClose, cart, onUpdateQuantity, onAddT
             <div>
               <h3 className="text-xl font-black text-white font-serif">Place Your Order</h3>
               <p className="text-xs text-neutral-400">
-                Part A: Direct to <strong className="text-amber-400">{TARGET_GMAIL}</strong> &amp; Supabase
+                Fresh Charcoal Delicacies · Cash on Delivery Available
               </p>
             </div>
           </div>
@@ -103,10 +103,10 @@ export function OrderFormModal({ isOpen, onClose, cart, onUpdateQuantity, onAddT
             <button
               type="button"
               onClick={handleQuickDemoFill}
-              className="text-[11px] px-2.5 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-amber-300 font-medium border border-neutral-700 transition"
-              title="Click to fill sample Pakistani address for quick testing"
+              className="text-[11px] px-2.5 py-1 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-neutral-300 font-medium border border-neutral-700 transition"
+              title="Click to fill sample delivery address"
             >
-              Demo Auto-Fill
+              Fill Sample Address
             </button>
             <button
               onClick={onClose}
@@ -300,12 +300,12 @@ export function OrderFormModal({ isOpen, onClose, cart, onUpdateQuantity, onAddT
           {/* Trust notes */}
           <div className="grid grid-cols-2 gap-2 text-[11px] text-neutral-400">
             <div className="flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-red-400" />
-              <span>Copy to: {TARGET_GMAIL}</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Secure Instant Checkout</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Status: Saved as Pending</span>
+              <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <span>Delivery in 30-40 Mins</span>
             </div>
           </div>
 

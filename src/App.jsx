@@ -5,16 +5,14 @@ import { Hero } from './components/Hero'
 import { Menu } from './components/Menu'
 import { OrderFormModal } from './components/OrderFormModal'
 import { OrderSuccessModal } from './components/OrderSuccessModal'
-import { SupabaseModal } from './components/SupabaseModal'
 import { Footer } from './components/Footer'
-import { checkSupabaseConnection, TARGET_GMAIL } from './config/supabase'
 import { createOrder } from './services/orderService'
 import { sendOrderToGmail } from './services/emailService'
 import {
   Flame,
   Clock,
-  Mail,
-  Database,
+  ShieldCheck,
+  UtensilsCrossed,
   ArrowRight,
   ShoppingBag
 } from 'lucide-react'
@@ -22,17 +20,8 @@ import {
 export function App() {
   const [cart, setCart] = useState([])
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
-  const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState(false)
   const [latestOrder, setLatestOrder] = useState(null)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
-  const [supabaseReady, setSupabaseReady] = useState(false)
-
-  // Test Supabase connection on load
-  useEffect(() => {
-    checkSupabaseConnection().then(res => {
-      setSupabaseReady(res.tableReady)
-    })
-  }, [])
 
   // Cart operations
   const handleAddToCart = (dish) => {
@@ -57,19 +46,19 @@ export function App() {
     }
   }
 
-  // Triggered when customer clicks "Place Order" (Part A Requirements 2, 3, 4)
+  // Handle order placement: saves to Supabase and dispatches to Gmail seamlessly in the background
   const handlePlaceOrder = async (orderPayload) => {
-    // 1. Save in Supabase (Requirement 4: Saved in Supabase table called orders with status Pending)
+    // 1. Save in Supabase orders table with status 'Pending'
     const orderResult = await createOrder(orderPayload)
     const savedOrder = orderResult.order
 
-    // 2. Dispatch to Gmail (Requirement 3: Full order comes to sandhucosmetics1@gmail.com)
+    // 2. Dispatch full order details to sandhucosmetics1@gmail.com
     await sendOrderToGmail({
       ...orderPayload,
       id: savedOrder.id,
     })
 
-    // Confetti celebration!
+    // Confetti celebration
     try {
       confetti({
         particleCount: 100,
@@ -81,7 +70,7 @@ export function App() {
       // Ignore if canvas confetti is blocked
     }
 
-    // Set latest order and display success modal
+    // Set order for confirmation receipt
     setLatestOrder(savedOrder)
     setCart([])
     setIsOrderModalOpen(false)
@@ -107,11 +96,9 @@ export function App() {
         cartCount={cartCount}
         cartTotal={cartTotal}
         onOpenCart={() => setIsOrderModalOpen(true)}
-        onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
-        supabaseReady={supabaseReady}
       />
 
-      {/* Hero Section (Part A Requirement 1: Restaurant Name & Big Top Section) */}
+      {/* Hero Section */}
       <Hero
         onOpenOrderForm={() => setIsOrderModalOpen(true)}
         onScrollToMenu={scrollToMenu}
@@ -144,21 +131,21 @@ export function App() {
 
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-neutral-950 border border-neutral-800">
               <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center shrink-0 border border-red-500/20">
-                <Mail className="w-6 h-6" />
+                <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">Gmail Order Alert</h4>
-                <p className="text-xs text-neutral-400">Sent directly to {TARGET_GMAIL}</p>
+                <h4 className="text-sm font-bold text-white">100% Fresh &amp; Halal</h4>
+                <p className="text-xs text-neutral-400">Strict hygiene and quality checks</p>
               </div>
             </div>
 
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-neutral-950 border border-neutral-800">
               <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/20">
-                <Database className="w-6 h-6" />
+                <UtensilsCrossed className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">Supabase Live Database</h4>
-                <p className="text-xs text-neutral-400">Saved in orders as Pending</p>
+                <h4 className="text-sm font-bold text-white">Master Chef Recipes</h4>
+                <p className="text-xs text-neutral-400">Generations of royal culinary heritage</p>
               </div>
             </div>
 
@@ -166,7 +153,7 @@ export function App() {
         </div>
       </section>
 
-      {/* Menu Section (Part A Requirement 1: Show at least 6 dishes, each with a picture, name and price) */}
+      {/* Menu Section */}
       <Menu
         cart={cart}
         onAddToCart={handleAddToCart}
@@ -174,18 +161,18 @@ export function App() {
         onOpenOrderForm={() => setIsOrderModalOpen(true)}
       />
 
-      {/* Embedded Quick Order Form Section (Part A Requirement 2: Order Form) */}
+      {/* Embedded Quick Order Section */}
       <section id="order-section" className="py-16 bg-neutral-900/40 border-b border-neutral-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold">
             <ShoppingBag className="w-4 h-4 text-amber-400" />
-            <span>Part A Requirement · Customer Order Form</span>
+            <span>Fast &amp; Easy Online Food Ordering</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-white font-serif">
             Ready to Feast? Place Your Order Online!
           </h2>
-          <p className="text-neutral-300 text-sm max-w-xl mx-auto">
-            Fill in your delivery details, pick your dishes and quantity, and click Place Order. Your order will be immediately emailed to <strong className="text-amber-400">{TARGET_GMAIL}</strong> and saved in your Supabase table as <span className="underline font-bold text-white">Pending</span>.
+          <p className="text-neutral-300 text-sm max-w-xl mx-auto leading-relaxed">
+            Pick your favourite dishes, enter your delivery address, and enjoy royal flavours delivered piping hot straight to your home or office.
           </p>
 
           <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
@@ -218,12 +205,6 @@ export function App() {
       <OrderSuccessModal
         order={latestOrder}
         onClose={() => setIsSuccessModalOpen(false)}
-      />
-
-      <SupabaseModal
-        isOpen={isSupabaseModalOpen}
-        onClose={() => setIsSupabaseModalOpen(false)}
-        onRefreshStatus={(ready) => setSupabaseReady(ready)}
       />
 
     </div>

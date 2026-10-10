@@ -1,5 +1,5 @@
 import React from 'react'
-import { Sparkles, ArrowRight, ShieldCheck, Clock, Flame, Star, CheckCircle2, Mail, Database } from 'lucide-react'
+import { Sparkles, ArrowRight, Clock, Flame, Star, CheckCircle2, ShieldCheck, HeartHandshake } from 'lucide-react'
 
 export function Hero({ onOpenOrderForm, onScrollToMenu }) {
   return (
@@ -14,10 +14,10 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
           {/* Left Column: Big Top Section Info */}
           <div className="lg:col-span-7 text-left space-y-6">
             
-            {/* Hackathon badge */}
+            {/* Ambient luxury badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900 border border-amber-500/30 text-amber-300 text-xs font-medium">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Saylani Mass IT Training · Hackathon Part A: Restaurant Website</span>
+              <span>Karachi's Premier Charcoal Grill &amp; Royal Cuisine</span>
             </div>
 
             {/* Main Headline */}
@@ -32,28 +32,28 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
             <p className="text-base sm:text-lg text-neutral-300 max-w-2xl leading-relaxed">
               Welcome to <span className="text-white font-bold">Zaika Royale Bistro</span>. Experience Karachi’s finest 
               slow-cooked Dum Mutton Biryani, live charcoal-grilled seekh kababs, and slow-simmered beef nihari. 
-              Fresh ingredients, centuries-old recipes, delivered hot to your doorstep.
+              Fresh ingredients, centuries-old recipes, delivered piping hot to your doorstep.
             </p>
 
-            {/* Highlight Cards: Gmail & Supabase integration proof */}
+            {/* Highlight Cards: Real restaurant value props */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
               <div className="flex items-start gap-3 p-3.5 rounded-xl bg-neutral-900/80 border border-neutral-800 backdrop-blur-sm">
-                <div className="p-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20">
-                  <Mail className="w-4 h-4" />
+                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <Clock className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">Direct Gmail Dispatch</p>
-                  <p className="text-[11px] text-neutral-400">Instant order sent to <span className="text-amber-300">sandhucosmetics1@gmail.com</span></p>
+                  <p className="text-xs font-bold text-white">Express 30-Min Delivery</p>
+                  <p className="text-[11px] text-neutral-400">Piping hot food delivered straight from our tandoor to your home</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 p-3.5 rounded-xl bg-neutral-900/80 border border-neutral-800 backdrop-blur-sm">
                 <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <Database className="w-4 h-4" />
+                  <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">Live Supabase Database</p>
-                  <p className="text-[11px] text-neutral-400">Recorded in <span className="text-emerald-400">orders</span> table with status: <strong className="text-white">Pending</strong></p>
+                  <p className="text-xs font-bold text-white">100% Halal &amp; Fresh Daily</p>
+                  <p className="text-[11px] text-neutral-400">Prime aged meat and handcrafted aromatic spices</p>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
                 onClick={onOpenOrderForm}
                 className="px-7 py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-black text-base shadow-xl shadow-amber-500/20 flex items-center gap-2.5 transition active:scale-95 cursor-pointer"
               >
-                <span>Place Order Now</span>
+                <span>Order Food Online</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
 
@@ -72,7 +72,7 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
                 onClick={onScrollToMenu}
                 className="px-6 py-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 hover:border-amber-500/40 text-neutral-200 font-semibold text-base transition cursor-pointer"
               >
-                <span>Explore Full Menu (8 Dishes)</span>
+                <span>Explore Full Menu</span>
               </button>
             </div>
 
@@ -84,7 +84,7 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
               </div>
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-amber-400" />
-                <span>30-Min Fast Delivery</span>
+                <span>Fast Home Delivery</span>
               </div>
               <div className="flex items-center gap-2">
                 <Flame className="w-4 h-4 text-orange-400" />
@@ -123,7 +123,7 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
 
                   {/* Bottom Image Info */}
                   <div className="absolute bottom-4 left-4 right-4">
-                    <span className="text-xs uppercase tracking-wider text-amber-400 font-bold">Featured Main</span>
+                    <span className="text-xs uppercase tracking-wider text-amber-400 font-bold">Featured Dish</span>
                     <h3 className="text-xl font-bold text-white font-serif">Royal Dum Mutton Biryani</h3>
                     <p className="text-xs text-neutral-300">Served with seasoned raita, fresh mint salad &amp; roasted potatoes</p>
                   </div>
@@ -151,7 +151,7 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-white">4.9 / 5.0 Star Rating</p>
-                  <p className="text-[11px] text-neutral-400">Based on 2,800+ food reviews</p>
+                  <p className="text-[11px] text-neutral-400">Based on 2,800+ customer reviews</p>
                 </div>
               </div>
 
@@ -163,4 +163,3 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
     </section>
   )
 }
-

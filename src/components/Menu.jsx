@@ -25,7 +25,7 @@ export function Menu({ cart, onAddToCart, onUpdateQuantity, onOpenOrderForm }) {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-3">
-            <span>Part A Requirement · 6+ Dishes Menu</span>
+            <span>Chef's Specialities · Handcrafted Menu</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-white font-serif tracking-tight">
             Our Handcrafted Delicacies

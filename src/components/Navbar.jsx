@@ -1,19 +1,19 @@
 import React from 'react'
 import { UtensilsCrossed, ShoppingBag, Phone, Clock, Sparkles } from 'lucide-react'
 
-export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenSupabaseModal, supabaseReady }) {
+export function Navbar({ cartCount, cartTotal, onOpenCart }) {
   return (
     <header className="sticky top-0 z-40 bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800/80 transition-all">
-      {/* Top micro banner */}
+      {/* Top Announcement Banner */}
       <div className="bg-gradient-to-r from-amber-700 via-amber-600 to-orange-600 text-neutral-950 text-xs font-semibold px-4 py-1.5">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-neutral-950 animate-ping"></span>
-            <span>🔥 Saylani Hackathon · Part A: Orders routed to <strong>sandhucosmetics1@gmail.com</strong> &amp; Supabase</span>
+            <span>✨ Special Offer: Free Express Delivery on All Orders Over Rs. 1,000 | 100% Fresh Charcoal Grilled Daily</span>
           </div>
           <div className="flex items-center gap-4 text-neutral-950">
             <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" /> 12:00 PM – 2:00 AM PKT
+              <Clock className="w-3.5 h-3.5" /> 12:00 PM – 2:00 AM Daily
             </span>
             <span className="hidden sm:inline font-bold">|</span>
             <span className="hidden sm:flex items-center gap-1 font-bold">
@@ -32,30 +32,19 @@ export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenSupabaseModal, 
               <UtensilsCrossed className="w-6 h-6 text-neutral-950" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-black tracking-tight text-white font-serif">
-                  Zaika<span className="text-amber-400">Royale</span>
-                </span>
-                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                  Part A
-                </span>
-              </div>
+              <span className="text-2xl font-black tracking-tight text-white font-serif">
+                Zaika<span className="text-amber-400">Royale</span>
+              </span>
               <p className="text-xs text-neutral-400 tracking-wider uppercase font-medium">Bistro &amp; Charcoal Grill</p>
             </div>
           </a>
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-300">
-            <a href="#menu" className="hover:text-amber-400 transition-colors">Menu (6+ Dishes)</a>
+            <a href="#menu" className="hover:text-amber-400 transition-colors">Our Menu</a>
             <a href="#why-us" className="hover:text-amber-400 transition-colors">Why Choose Us</a>
             <a href="#order-section" className="hover:text-amber-400 transition-colors">Order Online</a>
-            <button
-              onClick={onOpenSupabaseModal}
-              className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-neutral-700 hover:border-amber-500/50 transition-colors cursor-pointer"
-            >
-              <span className={`w-2 h-2 rounded-full ${supabaseReady ? 'bg-emerald-500' : 'bg-amber-400 animate-pulse'}`}></span>
-              <span>Supabase {supabaseReady ? 'Connected' : 'Setup'}</span>
-            </button>
+            <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
           </nav>
 
           {/* Right Action Buttons */}
@@ -63,10 +52,10 @@ export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenSupabaseModal, 
             {/* Quick Order Form shortcut */}
             <button
               onClick={onOpenCart}
-              className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 hover:border-amber-500 text-neutral-200 transition hidden sm:flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2.5 rounded-xl text-xs font-bold border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 hover:border-amber-500 text-neutral-200 transition hidden sm:flex items-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Place Order Form</span>
+              <span>Order Online</span>
             </button>
 
             {/* Cart / Order button */}
