@@ -70,8 +70,6 @@ export function TrackOrderModal({ isOpen, onClose, initialQuery = '' }) {
     }
   }, [isOpen, initialQuery])
 
-  if (!isOpen) return null
-
   const handleSearch = (e) => {
     if (e) e.preventDefault()
     executeSearch(searchQuery)
@@ -176,6 +174,8 @@ export function TrackOrderModal({ isOpen, onClose, initialQuery = '' }) {
   ]
 
   const refDisplay = searchedOrder?.ref_id || (searchedOrder?.id ? (typeof searchedOrder.id === 'string' && searchedOrder.id.length > 8 ? searchedOrder.id.slice(0, 8).toUpperCase() : searchedOrder.id) : 'ZR-ORDER')
+
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-neutral-950/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
