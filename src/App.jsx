@@ -195,9 +195,15 @@ export function App() {
       />
 
       <OrderSuccessModal
+        isOpen={isSuccessModalOpen}
         order={latestOrder}
         emailStatus={emailStatus}
-        onClose={() => setIsSuccessModalOpen(false)}
+        onClose={() => {
+          setIsSuccessModalOpen(false)
+          setLatestOrder(null)
+          setEmailStatus(null)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
       />
 
     </div>

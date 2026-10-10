@@ -186,22 +186,23 @@ export function Menu({ cart, onAddToCart, onUpdateQuantity, onOpenOrderForm }) {
 
         {/* Floating Quick Checkout Bar if items selected */}
         {cart.length > 0 && (
-          <div className="mt-12 p-4 rounded-2xl bg-gradient-to-r from-neutral-900 to-neutral-800 border border-amber-500/40 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500 text-neutral-950 flex items-center justify-center font-black">
+          <div className="fixed bottom-3 left-3 right-3 sm:static sm:mt-12 z-30 p-3 sm:p-4 rounded-2xl bg-neutral-900/95 backdrop-blur-md sm:bg-gradient-to-r sm:from-neutral-900 sm:to-neutral-800 border border-amber-500/50 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-3 animate-fadeIn">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-500 text-neutral-950 flex items-center justify-center font-black shrink-0">
                 <ShoppingBag className="w-5 h-5" />
               </div>
-              <div>
-                <p className="text-xs text-neutral-400 uppercase tracking-wider font-semibold">Your Current Selection</p>
-                <p className="text-base font-bold text-white">
+              <div className="truncate flex-1">
+                <p className="text-[10px] sm:text-xs text-neutral-400 uppercase tracking-wider font-semibold">Current Selection</p>
+                <p className="text-xs sm:text-base font-bold text-white truncate">
                   {cart.reduce((s, i) => s + i.quantity, 0)} items · <span className="text-amber-400 font-black">Rs. {cart.reduce((s, i) => s + i.price * i.quantity, 0).toLocaleString()} PKR</span>
                 </p>
               </div>
             </div>
 
             <button
+              type="button"
               onClick={onOpenOrderForm}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-black text-sm uppercase tracking-wider transition shadow-lg shadow-amber-500/20 cursor-pointer active:scale-95"
+              className="w-full sm:w-auto px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-black text-xs sm:text-sm uppercase tracking-wider transition shadow-lg shadow-amber-500/20 cursor-pointer active:scale-95 shrink-0"
             >
               Proceed to Order Form &rarr;
             </button>

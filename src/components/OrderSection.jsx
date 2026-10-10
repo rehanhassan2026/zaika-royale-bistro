@@ -140,7 +140,7 @@ export function OrderSection({ cart, onUpdateQuantity, onAddToCart, onOrderPlace
             {/* =========================================================
                 LEFT COLUMN: CUSTOMER DETAILS FORM
                 ========================================================= */}
-            <div className="lg:col-span-7 p-6 sm:p-8 space-y-6">
+            <div className="lg:col-span-7 p-4 sm:p-8 space-y-5 sm:space-y-6">
               <div>
                 <h3 className="text-lg font-bold text-white font-serif flex items-center gap-2">
                   <User className="w-4 h-4 text-amber-400" />
@@ -236,7 +236,7 @@ export function OrderSection({ cart, onUpdateQuantity, onAddToCart, onOrderPlace
             {/* =========================================================
                 RIGHT COLUMN: SELECTED DISHES & SUMMARY
                 ========================================================= */}
-            <div className="lg:col-span-5 p-6 sm:p-8 bg-neutral-950/40 flex flex-col justify-between space-y-6">
+            <div className="lg:col-span-5 p-4 sm:p-8 bg-neutral-950/40 flex flex-col justify-between space-y-5 sm:space-y-6">
               
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -381,3 +381,4 @@ export function OrderSection({ cart, onUpdateQuantity, onAddToCart, onOrderPlace
     </section>
   )
 }
+

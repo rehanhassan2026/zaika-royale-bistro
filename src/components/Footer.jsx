@@ -45,14 +45,18 @@ export function Footer({ onOpenOrderForm }) {
                 <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-[10px] uppercase font-bold text-neutral-500 block">Delivery Hotline:</span>
-                  <span className="text-white font-semibold">+92 (300) 829-1234</span>
+                  <a href="tel:+923008291234" className="text-white font-semibold hover:text-amber-400 transition">
+                    +92 (300) 829-1234
+                  </a>
                 </div>
               </li>
               <li className="flex items-start gap-2">
                 <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-[10px] uppercase font-bold text-neutral-500 block">Orders &amp; Queries:</span>
-                  <span className="text-white font-semibold">sandhucosmetics1@gmail.com</span>
+                  <a href="mailto:sandhucosmetics1@gmail.com" className="text-white font-semibold hover:text-amber-400 transition">
+                    sandhucosmetics1@gmail.com
+                  </a>
                 </div>
               </li>
             </ul>
