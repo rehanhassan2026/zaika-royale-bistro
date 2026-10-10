@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import confetti from 'canvas-confetti'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
 import { Menu } from './components/Menu'
+import { OrderSection } from './components/OrderSection'
 import { OrderFormModal } from './components/OrderFormModal'
 import { OrderSuccessModal } from './components/OrderSuccessModal'
 import { Footer } from './components/Footer'
@@ -12,9 +13,7 @@ import {
   Flame,
   Clock,
   ShieldCheck,
-  UtensilsCrossed,
-  ArrowRight,
-  ShoppingBag
+  UtensilsCrossed
 } from 'lucide-react'
 
 export function App() {
@@ -47,7 +46,24 @@ export function App() {
     }
   }
 
-  // Handle order placement: saves to Supabase and dispatches to Gmail seamlessly in the background
+  // Smooth scroll to on-page order form
+  const scrollToOrderForm = () => {
+    const el = document.getElementById('order-form')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      setIsOrderModalOpen(true)
+    }
+  }
+
+  const scrollToMenu = () => {
+    const el = document.getElementById('menu')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  // Handle order placement
   const handlePlaceOrder = async (orderPayload) => {
     // 1. Save in Supabase orders table with status 'Pending'
     const orderResult = await createOrder(orderPayload)
@@ -69,7 +85,7 @@ export function App() {
         colors: ['#f59e0b', '#fbbf24', '#f97316', '#10b981'],
       })
     } catch (e) {
-      // Ignore if canvas confetti is blocked
+      // Ignore if blocked
     }
 
     // Set order for confirmation receipt
@@ -82,14 +98,6 @@ export function App() {
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
-  // Scroll helper
-  const scrollToMenu = () => {
-    const el = document.getElementById('menu')
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col selection:bg-amber-500 selection:text-neutral-950">
       
@@ -97,12 +105,12 @@ export function App() {
       <Navbar
         cartCount={cartCount}
         cartTotal={cartTotal}
-        onOpenCart={() => setIsOrderModalOpen(true)}
+        onOpenCart={scrollToOrderForm}
       />
 
       {/* Hero Section */}
       <Hero
-        onOpenOrderForm={() => setIsOrderModalOpen(true)}
+        onOpenOrderForm={scrollToOrderForm}
         onScrollToMenu={scrollToMenu}
       />
 
@@ -160,38 +168,20 @@ export function App() {
         cart={cart}
         onAddToCart={handleAddToCart}
         onUpdateQuantity={handleUpdateQuantity}
-        onOpenOrderForm={() => setIsOrderModalOpen(true)}
+        onOpenOrderForm={scrollToOrderForm}
       />
 
-      {/* Embedded Quick Order Section */}
-      <section id="order-section" className="py-16 bg-neutral-900/40 border-b border-neutral-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold">
-            <ShoppingBag className="w-4 h-4 text-amber-400" />
-            <span>Fast &amp; Easy Online Food Ordering</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white font-serif">
-            Ready to Feast? Place Your Order Online!
-          </h2>
-          <p className="text-neutral-300 text-sm max-w-xl mx-auto leading-relaxed">
-            Pick your favourite dishes, enter your delivery address, and enjoy royal flavours delivered piping hot straight to your home or office.
-          </p>
-
-          <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-            <button
-              onClick={() => setIsOrderModalOpen(true)}
-              className="px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 font-black text-base shadow-xl shadow-amber-500/25 flex items-center gap-3 transition active:scale-95 cursor-pointer"
-            >
-              <span>Open Online Order Form</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </section>
+      {/* Fully Visible On-Page Order Form Section */}
+      <OrderSection
+        cart={cart}
+        onUpdateQuantity={handleUpdateQuantity}
+        onAddToCart={handleAddToCart}
+        onOrderPlaced={handlePlaceOrder}
+      />
 
       {/* Footer */}
       <Footer
-        onOpenOrderForm={() => setIsOrderModalOpen(true)}
+        onOpenOrderForm={scrollToOrderForm}
       />
 
       {/* Modals */}

@@ -43,7 +43,7 @@ export function Navbar({ cartCount, cartTotal, onOpenCart }) {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-300">
             <a href="#menu" className="hover:text-amber-400 transition-colors">Our Menu</a>
             <a href="#why-us" className="hover:text-amber-400 transition-colors">Why Choose Us</a>
-            <a href="#order-section" className="hover:text-amber-400 transition-colors">Order Online</a>
+            <a href="#order-form" className="hover:text-amber-400 transition-colors">Order Online</a>
             <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
           </nav>
 
