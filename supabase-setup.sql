@@ -55,3 +55,4 @@ VALUES (
 
 -- Check created orders
 SELECT * FROM public.orders ORDER BY created_at DESC;
+

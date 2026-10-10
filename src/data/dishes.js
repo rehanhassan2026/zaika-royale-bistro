@@ -114,3 +114,4 @@ export const DISHES = [
 ]
 
 export const CATEGORIES = ['All', 'Mains', 'BBQ & Grill', 'Vegetarian', 'Breads', 'Desserts']
+

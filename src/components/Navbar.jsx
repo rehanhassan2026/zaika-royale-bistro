@@ -1,7 +1,7 @@
-import { UtensilsCrossed, ShoppingBag, ShieldCheck, Phone, Clock, Flame } from 'lucide-react'
-import { Instagram, Facebook } from './Icons'
+import React from 'react'
+import { UtensilsCrossed, ShoppingBag, Phone, Clock, Sparkles } from 'lucide-react'
 
-export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenAdmin, isAdminLoggedIn, onOpenSupabaseModal, supabaseReady }) {
+export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenSupabaseModal, supabaseReady }) {
   return (
     <header className="sticky top-0 z-40 bg-neutral-950/90 backdrop-blur-md border-b border-neutral-800/80 transition-all">
       {/* Top micro banner */}
@@ -9,7 +9,7 @@ export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenAdmin, isAdminL
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-neutral-950 animate-ping"></span>
-            <span>🔥 Saylani Hackathon Edition · Orders routed to <strong>sandhucosmetics1@gmail.com</strong> &amp; Supabase</span>
+            <span>🔥 Saylani Hackathon · Part A: Orders routed to <strong>sandhucosmetics1@gmail.com</strong> &amp; Supabase</span>
           </div>
           <div className="flex items-center gap-4 text-neutral-950">
             <span className="flex items-center gap-1">
@@ -37,7 +37,7 @@ export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenAdmin, isAdminL
                   Zaika<span className="text-amber-400">Royale</span>
                 </span>
                 <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                  Part A &amp; B
+                  Part A
                 </span>
               </div>
               <p className="text-xs text-neutral-400 tracking-wider uppercase font-medium">Bistro &amp; Charcoal Grill</p>
@@ -51,7 +51,7 @@ export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenAdmin, isAdminL
             <a href="#order-section" className="hover:text-amber-400 transition-colors">Order Online</a>
             <button
               onClick={onOpenSupabaseModal}
-              className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-neutral-700 hover:border-amber-500/50 transition-colors"
+              className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-neutral-700 hover:border-amber-500/50 transition-colors cursor-pointer"
             >
               <span className={`w-2 h-2 rounded-full ${supabaseReady ? 'bg-emerald-500' : 'bg-amber-400 animate-pulse'}`}></span>
               <span>Supabase {supabaseReady ? 'Connected' : 'Setup'}</span>
@@ -60,31 +60,13 @@ export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenAdmin, isAdminL
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-3">
-            {/* Social media links */}
-            <div className="hidden lg:flex items-center gap-1.5 text-neutral-400 pr-2 border-r border-neutral-800">
-              <a
-                href="#social-section"
-                title="Instagram Page"
-                className="p-2 rounded-lg hover:text-amber-400 hover:bg-neutral-800 transition"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="#social-section"
-                title="Facebook Page"
-                className="p-2 rounded-lg hover:text-amber-400 hover:bg-neutral-800 transition"
-              >
-                <Facebook className="w-4 h-4" />
-              </a>
-            </div>
-
-            {/* Admin Dashboard Button */}
+            {/* Quick Order Form shortcut */}
             <button
-              onClick={onOpenAdmin}
-              className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 hover:border-amber-500 text-neutral-200 transition flex items-center gap-1.5"
+              onClick={onOpenCart}
+              className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 hover:border-amber-500 text-neutral-200 transition hidden sm:flex items-center gap-1.5 cursor-pointer"
             >
-              <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>{isAdminLoggedIn ? 'Admin Panel' : 'Admin Login'}</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Place Order Form</span>
             </button>
 
             {/* Cart / Order button */}

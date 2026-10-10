@@ -17,7 +17,7 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
             {/* Hackathon badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900 border border-amber-500/30 text-amber-300 text-xs font-medium">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Saylani Mass IT Training · Web &amp; AI Hackathon (Part A &amp; B)</span>
+              <span>Saylani Mass IT Training · Hackathon Part A: Restaurant Website</span>
             </div>
 
             {/* Main Headline */}
@@ -163,3 +163,4 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
     </section>
   )
 }
+

@@ -151,3 +151,4 @@ export async function updateOrderStatus(orderId, newStatus) {
     error: supabaseError ? supabaseError.message : null,
   }
 }
+

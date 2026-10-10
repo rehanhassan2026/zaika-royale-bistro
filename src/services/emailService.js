@@ -93,3 +93,4 @@ PAYMENT METHOD:   Cash on Delivery
   const body = encodeURIComponent(bodyText)
   return `https://mail.google.com/mail/?view=cm&fs=1&to=${TARGET_GMAIL}&su=${subject}&body=${body}`
 }
+

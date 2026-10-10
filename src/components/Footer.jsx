@@ -1,17 +1,17 @@
-import { UtensilsCrossed, Mail, Phone, MapPin, Clock, ShieldCheck, Heart } from 'lucide-react'
-import { Instagram, Facebook } from './Icons'
+import React from 'react'
+import { UtensilsCrossed, Mail, Phone, MapPin, Clock } from 'lucide-react'
 import { TARGET_GMAIL } from '../config/supabase'
 
-export function Footer({ onOpenAdmin, onOpenOrderForm }) {
+export function Footer({ onOpenOrderForm }) {
   return (
     <footer className="bg-neutral-950 border-t border-neutral-800 text-neutral-400 text-xs">
       
       {/* Main Footer Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           
           {/* Col 1: Brand Info */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-neutral-950 font-bold">
                 <UtensilsCrossed className="w-5 h-5" />
@@ -23,32 +23,8 @@ export function Footer({ onOpenAdmin, onOpenOrderForm }) {
 
             <p className="text-neutral-400 text-xs leading-relaxed max-w-sm">
               Artisan Pakistani barbecue, clay tandoor delicacies, and slow-dum mutton biryani. 
-              Built with precision for the Saylani Mass IT Training (SMIT) AI Web Hackathon.
+              Built for Saylani Mass IT Training (SMIT) Hackathon — Part A: Restaurant Website.
             </p>
-
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href="#social-section"
-                className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-amber-500 hover:text-amber-400 flex items-center justify-center transition"
-                title="Instagram"
-              >
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="#social-section"
-                className="w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-amber-500 hover:text-amber-400 flex items-center justify-center transition"
-                title="Facebook"
-              >
-                <Facebook className="w-4 h-4" />
-              </a>
-              <button
-                onClick={onOpenAdmin}
-                className="px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 hover:border-amber-500 hover:text-amber-400 flex items-center gap-1.5 transition text-[11px] font-semibold"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                <span>Admin Login</span>
-              </button>
-            </div>
           </div>
 
           {/* Col 2: Quick Links */}
@@ -58,7 +34,6 @@ export function Footer({ onOpenAdmin, onOpenOrderForm }) {
               <li><a href="#menu" className="hover:text-amber-400 transition">Our Menu (6+ Dishes)</a></li>
               <li><a href="#why-us" className="hover:text-amber-400 transition">Why Choose Us</a></li>
               <li><button onClick={onOpenOrderForm} className="hover:text-amber-400 transition cursor-pointer text-left">Online Order Form</button></li>
-              <li><a href="#social-section" className="hover:text-amber-400 transition">Social Media Posts</a></li>
             </ul>
           </div>
 
@@ -102,9 +77,9 @@ export function Footer({ onOpenAdmin, onOpenOrderForm }) {
 
         {/* Bottom bar */}
         <div className="pt-8 mt-8 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
-          <p>© 2026 Zaika Royale Bistro · Saylani Mass IT Training Hackathon Project.</p>
+          <p>© 2026 Zaika Royale Bistro · Saylani Mass IT Training Hackathon Part A.</p>
           <div className="flex items-center gap-1">
-            <span>Crafted for high performance with React, Tailwind &amp; Supabase</span>
+            <span>Orders directly to sandhucosmetics1@gmail.com &amp; Supabase</span>
           </div>
         </div>
 

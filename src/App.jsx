@@ -5,41 +5,27 @@ import { Hero } from './components/Hero'
 import { Menu } from './components/Menu'
 import { OrderFormModal } from './components/OrderFormModal'
 import { OrderSuccessModal } from './components/OrderSuccessModal'
-import { AdminLogin } from './components/AdminLogin'
-import { AdminDashboard } from './components/AdminDashboard'
 import { SupabaseModal } from './components/SupabaseModal'
 import { Footer } from './components/Footer'
-import { DISHES } from './data/dishes'
-import { SOCIAL_SCHEDULE } from './data/socialSchedule'
 import { checkSupabaseConnection, TARGET_GMAIL } from './config/supabase'
 import { createOrder } from './services/orderService'
 import { sendOrderToGmail } from './services/emailService'
 import {
-  Sparkles,
   Flame,
   Clock,
-  ShieldCheck,
-  CheckCircle2,
   Mail,
   Database,
   ArrowRight,
-  ShoppingBag,
-  Star,
-  PhoneCall
+  ShoppingBag
 } from 'lucide-react'
-import { Instagram, Facebook } from './components/Icons'
 
 export function App() {
   const [cart, setCart] = useState([])
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false)
-  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false)
   const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState(false)
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
-  const [adminUser, setAdminUser] = useState(null)
   const [latestOrder, setLatestOrder] = useState(null)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
   const [supabaseReady, setSupabaseReady] = useState(false)
-  const [currentView, setCurrentView] = useState('customer') // 'customer' | 'admin'
 
   // Test Supabase connection on load
   useEffect(() => {
@@ -71,13 +57,13 @@ export function App() {
     }
   }
 
-  // Triggered when customer clicks "Place Order"
+  // Triggered when customer clicks "Place Order" (Part A Requirements 2, 3, 4)
   const handlePlaceOrder = async (orderPayload) => {
-    // 1. Save in Supabase (Part A Requirement 4: "Order is saved in Supabase table orders with status Pending")
+    // 1. Save in Supabase (Requirement 4: Saved in Supabase table called orders with status Pending)
     const orderResult = await createOrder(orderPayload)
     const savedOrder = orderResult.order
 
-    // 2. Dispatch to Gmail (Part A Requirement 3: "full order comes to your Gmail: dishes, quantity, total, name, phone and address")
+    // 2. Dispatch to Gmail (Requirement 3: Full order comes to sandhucosmetics1@gmail.com)
     await sendOrderToGmail({
       ...orderPayload,
       id: savedOrder.id,
@@ -113,31 +99,6 @@ export function App() {
     }
   }
 
-  // If viewing admin dashboard directly
-  if (currentView === 'admin' && isAdminLoggedIn) {
-    return (
-      <div className="min-h-screen bg-neutral-950 text-white">
-        <AdminDashboard
-          adminUser={adminUser}
-          onLogout={() => {
-            setIsAdminLoggedIn(false)
-            setAdminUser(null)
-            setCurrentView('customer')
-          }}
-          onReturnHome={() => setCurrentView('customer')}
-          onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
-          supabaseReady={supabaseReady}
-        />
-
-        <SupabaseModal
-          isOpen={isSupabaseModalOpen}
-          onClose={() => setIsSupabaseModalOpen(false)}
-          onRefreshStatus={(ready) => setSupabaseReady(ready)}
-        />
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col selection:bg-amber-500 selection:text-neutral-950">
       
@@ -146,19 +107,11 @@ export function App() {
         cartCount={cartCount}
         cartTotal={cartTotal}
         onOpenCart={() => setIsOrderModalOpen(true)}
-        onOpenAdmin={() => {
-          if (isAdminLoggedIn) {
-            setCurrentView('admin')
-          } else {
-            setIsAdminLoginOpen(true)
-          }
-        }}
-        isAdminLoggedIn={isAdminLoggedIn}
         onOpenSupabaseModal={() => setIsSupabaseModalOpen(true)}
         supabaseReady={supabaseReady}
       />
 
-      {/* Hero Section (Part A Requirement 1) */}
+      {/* Hero Section (Part A Requirement 1: Restaurant Name & Big Top Section) */}
       <Hero
         onOpenOrderForm={() => setIsOrderModalOpen(true)}
         onScrollToMenu={scrollToMenu}
@@ -195,7 +148,7 @@ export function App() {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-white">Gmail Order Alert</h4>
-                <p className="text-xs text-neutral-400">Instant notification to inbox</p>
+                <p className="text-xs text-neutral-400">Sent directly to {TARGET_GMAIL}</p>
               </div>
             </div>
 
@@ -204,8 +157,8 @@ export function App() {
                 <Database className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-white">Supabase Live Sync</h4>
-                <p className="text-xs text-neutral-400">Realtime orders status tracker</p>
+                <h4 className="text-sm font-bold text-white">Supabase Live Database</h4>
+                <p className="text-xs text-neutral-400">Saved in orders as Pending</p>
               </div>
             </div>
 
@@ -213,7 +166,7 @@ export function App() {
         </div>
       </section>
 
-      {/* Menu Section (Part A Requirement 1: "Show at least 6 dishes, each with a picture, name and price") */}
+      {/* Menu Section (Part A Requirement 1: Show at least 6 dishes, each with a picture, name and price) */}
       <Menu
         cart={cart}
         onAddToCart={handleAddToCart}
@@ -221,7 +174,7 @@ export function App() {
         onOpenOrderForm={() => setIsOrderModalOpen(true)}
       />
 
-      {/* Embedded Quick Order Section (Part A Requirement 2) */}
+      {/* Embedded Quick Order Form Section (Part A Requirement 2: Order Form) */}
       <section id="order-section" className="py-16 bg-neutral-900/40 border-b border-neutral-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold">
@@ -229,10 +182,10 @@ export function App() {
             <span>Part A Requirement · Customer Order Form</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-white font-serif">
-            Ready to Feast? Place Your Order in 1 Click!
+            Ready to Feast? Place Your Order Online!
           </h2>
           <p className="text-neutral-300 text-sm max-w-xl mx-auto">
-            Fill in your delivery details, pick your favorite dishes, and click Place Order. Your order will be immediately emailed to <strong className="text-amber-400">{TARGET_GMAIL}</strong> and recorded in Supabase as <span className="underline font-bold text-white">Pending</span>.
+            Fill in your delivery details, pick your dishes and quantity, and click Place Order. Your order will be immediately emailed to <strong className="text-amber-400">{TARGET_GMAIL}</strong> and saved in your Supabase table as <span className="underline font-bold text-white">Pending</span>.
           </p>
 
           <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
@@ -243,86 +196,12 @@ export function App() {
               <span>Open Online Order Form</span>
               <ArrowRight className="w-5 h-5" />
             </button>
-
-            <button
-              onClick={() => {
-                if (isAdminLoggedIn) {
-                  setCurrentView('admin')
-                } else {
-                  setIsAdminLoginOpen(true)
-                }
-              }}
-              className="px-6 py-4 rounded-2xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-200 font-bold text-sm flex items-center gap-2 transition cursor-pointer"
-            >
-              <ShieldCheck className="w-4 h-4 text-amber-400" />
-              <span>Admin Dashboard (Part B)</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Social Media Preview Section on Public Site (Part B Task 7 preview) */}
-      <section id="social-section" className="py-16 bg-neutral-950 border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/30 text-xs font-semibold mb-2">
-                <Instagram className="w-3.5 h-3.5" />
-                <span>Instagram &amp; Facebook Feed Preview</span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-black text-white font-serif">
-                Follow Us on Social Media @zaikaroyale.pk
-              </h3>
-              <p className="text-xs text-neutral-400 mt-1">
-                Automated posts scheduled for peak Pakistan appetite hours (12:30 PM, 8:00 PM, 1:00 PM, 7:30 PM).
-              </p>
-            </div>
-
-            <button
-              onClick={() => {
-                setIsAdminLoggedIn(true)
-                setAdminUser({ email: TARGET_GMAIL })
-                setCurrentView('admin')
-              }}
-              className="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-xs font-bold text-neutral-200 flex items-center gap-2 self-start md:self-auto transition cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>View Full Social Scheduler (Part B Task 7) &rarr;</span>
-            </button>
-          </div>
-
-          {/* Micro Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {SOCIAL_SCHEDULE.map(post => (
-              <div key={post.id} className="relative aspect-square rounded-2xl overflow-hidden group bg-neutral-900 border border-neutral-800">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent opacity-80 group-hover:opacity-95 transition"></div>
-                <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-neutral-950/80 backdrop-blur-md text-[10px] font-mono text-amber-400 border border-neutral-700">
-                  {post.time}
-                </div>
-                <div className="absolute bottom-3 left-3 right-3">
-                  <span className="text-[10px] uppercase font-bold text-amber-400 block">{post.topic}</span>
-                  <p className="text-xs font-bold text-white line-clamp-1">{post.title}</p>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
 
       {/* Footer */}
       <Footer
-        onOpenAdmin={() => {
-          if (isAdminLoggedIn) {
-            setCurrentView('admin')
-          } else {
-            setIsAdminLoginOpen(true)
-          }
-        }}
         onOpenOrderForm={() => setIsOrderModalOpen(true)}
       />
 
@@ -339,21 +218,6 @@ export function App() {
       <OrderSuccessModal
         order={latestOrder}
         onClose={() => setIsSuccessModalOpen(false)}
-        onOpenAdmin={() => {
-          setIsAdminLoggedIn(true)
-          setAdminUser({ email: TARGET_GMAIL })
-          setCurrentView('admin')
-        }}
-      />
-
-      <AdminLogin
-        isOpen={isAdminLoginOpen}
-        onClose={() => setIsAdminLoginOpen(false)}
-        onLoginSuccess={(user) => {
-          setIsAdminLoggedIn(true)
-          setAdminUser(user)
-          setCurrentView('admin')
-        }}
       />
 
       <SupabaseModal

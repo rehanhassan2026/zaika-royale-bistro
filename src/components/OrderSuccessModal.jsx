@@ -3,7 +3,7 @@ import { CheckCircle2, Mail, Database, ExternalLink, ArrowRight, X, Clock, Shiel
 import { TARGET_GMAIL } from '../config/supabase'
 import { getDirectGmailComposeUrl } from '../services/emailService'
 
-export function OrderSuccessModal({ order, onClose, onOpenAdmin }) {
+export function OrderSuccessModal({ order, onClose }) {
   if (!order) return null
 
   const directGmailUrl = getDirectGmailComposeUrl({
@@ -131,18 +131,9 @@ export function OrderSuccessModal({ order, onClose, onOpenAdmin }) {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-neutral-700 hover:bg-neutral-800 text-neutral-300 text-xs font-bold transition"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition shadow-lg shadow-amber-500/20 cursor-pointer"
             >
-              Close
-            </button>
-            <button
-              onClick={() => {
-                onClose()
-                onOpenAdmin()
-              }}
-              className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition shadow-lg shadow-amber-500/20"
-            >
-              <span>Admin Panel (Part B)</span>
+              <span>Back to Restaurant</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -153,3 +144,4 @@ export function OrderSuccessModal({ order, onClose, onOpenAdmin }) {
     </div>
   )
 }
+
