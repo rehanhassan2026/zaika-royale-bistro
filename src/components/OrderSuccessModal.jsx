@@ -1,12 +1,28 @@
-import React from 'react'
-import { CheckCircle2, ArrowRight, X, Clock, MapPin, Phone, Mail, AlertCircle, ExternalLink, Home } from 'lucide-react'
+import React, { useState } from 'react'
+import {
+  CheckCircle2,
+  ArrowRight,
+  X,
+  Clock,
+  MapPin,
+  Phone,
+  Mail,
+  AlertCircle,
+  ExternalLink,
+  Home,
+  Truck,
+  Copy,
+  Check
+} from 'lucide-react'
 import { TARGET_GMAIL } from '../config/supabase'
 import { getDirectGmailComposeUrl, getGmailSearchActivationUrl } from '../services/emailService'
 
-export function OrderSuccessModal({ isOpen, order, emailStatus, onClose }) {
+export function OrderSuccessModal({ isOpen, order, emailStatus, onClose, onTrackOrder }) {
+  const [copied, setCopied] = useState(false)
   if (!isOpen || !order) return null
 
-  const orderIdDisplay = order.id ? (typeof order.id === 'string' && order.id.length > 8 ? order.id.slice(0, 8).toUpperCase() : order.id) : 'ORD-LATEST'
+  const refCode = order.ref_id || (order.id ? (typeof order.id === 'string' && order.id.length > 8 ? order.id.slice(0, 8).toUpperCase() : order.id) : 'ZR-ORDER')
+  const orderIdDisplay = refCode
 
   const directGmailUrl = getDirectGmailComposeUrl(order)
   const gmailSearchUrl = getGmailSearchActivationUrl()
@@ -14,6 +30,18 @@ export function OrderSuccessModal({ isOpen, order, emailStatus, onClose }) {
   const handleClose = () => {
     if (onClose) {
       onClose()
+    }
+  }
+
+  const handleCopyRef = () => {
+    navigator.clipboard?.writeText(refCode)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleTrackClick = () => {
+    if (onTrackOrder) {
+      onTrackOrder(refCode)
     }
   }
 
@@ -40,8 +68,40 @@ export function OrderSuccessModal({ isOpen, order, emailStatus, onClose }) {
             Order Received Successfully!
           </h3>
           <p className="text-xs text-amber-100 font-medium mt-1">
-            Order #{orderIdDisplay} · Thank you for dining with Zaika Royale!
+            Thank you for dining with Zaika Royale!
           </p>
+        </div>
+
+        {/* Live Reference ID & Instant Tracking Banner */}
+        <div className="p-4 bg-amber-500/10 border-b border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+          <div className="text-center sm:text-left">
+            <span className="text-[10px] uppercase font-bold text-neutral-400 block tracking-wider">
+              Your Order Reference ID:
+            </span>
+            <div className="flex items-center justify-center sm:justify-start gap-2 mt-0.5">
+              <span className="font-mono text-xl font-black text-amber-400 tracking-wider">
+                #{refCode}
+              </span>
+              <button
+                type="button"
+                onClick={handleCopyRef}
+                className="p-1 rounded-md bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white transition cursor-pointer"
+                title="Copy Reference ID"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              </button>
+              {copied && <span className="text-[10px] text-emerald-400 font-bold">Copied!</span>}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleTrackClick}
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/20 transition cursor-pointer"
+          >
+            <Truck className="w-4 h-4" />
+            <span>Track Order Now</span>
+          </button>
         </div>
 
         {/* Email Status & Delivery Alert */}
@@ -113,21 +173,32 @@ export function OrderSuccessModal({ isOpen, order, emailStatus, onClose }) {
             href={directGmailUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-neutral-400 hover:text-amber-400 flex items-center gap-1.5 transition underline font-medium"
+            className="text-xs text-neutral-400 hover:text-amber-400 flex items-center gap-1.5 transition underline font-medium order-3 sm:order-1"
           >
             <Mail className="w-3.5 h-3.5 text-amber-400" />
             <span>Open Receipt in Gmail</span>
             <ExternalLink className="w-3 h-3" />
           </a>
 
-          <button
-            type="button"
-            onClick={handleClose}
-            className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg shadow-amber-500/20 cursor-pointer active:scale-95"
-          >
-            <Home className="w-4 h-4" />
-            <span>Back to Restaurant</span>
-          </button>
+          <div className="flex items-center gap-2 w-full sm:w-auto order-1 sm:order-2">
+            <button
+              type="button"
+              onClick={handleTrackClick}
+              className="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-amber-300 hover:text-amber-200 border border-amber-500/30 text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition cursor-pointer"
+            >
+              <Truck className="w-4 h-4 text-amber-400" />
+              <span>Track Order</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleClose}
+              className="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-neutral-950 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 transition shadow-lg shadow-amber-500/20 cursor-pointer active:scale-95"
+            >
+              <Home className="w-4 h-4" />
+              <span>Done</span>
+            </button>
+          </div>
         </div>
 
       </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { UtensilsCrossed, ShoppingBag, Phone, Clock, Sparkles, Menu as MenuIcon, X } from 'lucide-react'
+import { UtensilsCrossed, ShoppingBag, Phone, Clock, Sparkles, Menu as MenuIcon, X, Truck } from 'lucide-react'
 
-export function Navbar({ cartCount, cartTotal, onOpenCart }) {
+export function Navbar({ cartCount, cartTotal, onOpenCart, onOpenTrack }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleNavClick = (targetId) => {
@@ -55,15 +55,32 @@ export function Navbar({ cartCount, cartTotal, onOpenCart }) {
             <a href="#menu" className="hover:text-amber-400 transition-colors">Our Menu</a>
             <a href="#why-us" className="hover:text-amber-400 transition-colors">Why Choose Us</a>
             <a href="#order-form" className="hover:text-amber-400 transition-colors">Order Online</a>
+            <button
+              onClick={onOpenTrack}
+              className="hover:text-amber-400 transition-colors flex items-center gap-1.5 cursor-pointer font-medium"
+            >
+              <Truck className="w-4 h-4 text-amber-400" />
+              <span>Track Order</span>
+            </button>
             <a href="#contact" className="hover:text-amber-400 transition-colors">Contact</a>
           </nav>
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Track Order Button (Desktop & Tablet) */}
+            <button
+              onClick={onOpenTrack}
+              className="px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl text-xs font-bold border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 hover:border-amber-500/50 text-neutral-200 transition hidden sm:flex items-center gap-1.5 cursor-pointer"
+              title="Track your food order with Ref ID"
+            >
+              <Truck className="w-3.5 h-3.5 text-amber-400" />
+              <span>Track Order</span>
+            </button>
+
             {/* Quick Order Button (Desktop/Tablet) */}
             <button
               onClick={() => handleNavClick('order-form')}
-              className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-bold border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 hover:border-amber-500 text-neutral-200 transition hidden sm:flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs font-bold border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 hover:border-amber-500 text-neutral-200 transition hidden md:flex items-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>Order Online</span>
@@ -108,26 +125,36 @@ export function Navbar({ cartCount, cartTotal, onOpenCart }) {
           <nav className="flex flex-col space-y-1 text-sm font-semibold">
             <button
               onClick={() => handleNavClick('menu')}
-              className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-neutral-800 text-neutral-200 hover:text-amber-400 transition"
+              className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-neutral-800 text-neutral-200 hover:text-amber-400 transition cursor-pointer"
             >
               Our Menu (8 Dishes)
             </button>
             <button
               onClick={() => handleNavClick('why-us')}
-              className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-neutral-800 text-neutral-200 hover:text-amber-400 transition"
+              className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-neutral-800 text-neutral-200 hover:text-amber-400 transition cursor-pointer"
             >
               Why Choose Us
             </button>
             <button
               onClick={() => handleNavClick('order-form')}
-              className="w-full text-left py-2.5 px-3 rounded-xl bg-amber-500/10 text-amber-400 font-bold border border-amber-500/30 transition flex items-center justify-between"
+              className="w-full text-left py-2.5 px-3 rounded-xl bg-amber-500/10 text-amber-400 font-bold border border-amber-500/30 transition flex items-center justify-between cursor-pointer"
             >
               <span>Order Online Form</span>
               <span className="text-xs">→</span>
             </button>
             <button
+              onClick={() => {
+                setMobileMenuOpen(false)
+                if (onOpenTrack) onOpenTrack()
+              }}
+              className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-neutral-800 text-amber-300 hover:text-amber-200 transition flex items-center gap-2 cursor-pointer font-bold"
+            >
+              <Truck className="w-4 h-4 text-amber-400" />
+              <span>Track Order (Ref ID)</span>
+            </button>
+            <button
               onClick={() => handleNavClick('contact')}
-              className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-neutral-800 text-neutral-200 hover:text-amber-400 transition"
+              className="w-full text-left py-2.5 px-3 rounded-xl hover:bg-neutral-800 text-neutral-200 hover:text-amber-400 transition cursor-pointer"
             >
               Contact &amp; Location
             </button>

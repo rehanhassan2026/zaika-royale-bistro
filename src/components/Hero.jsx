@@ -1,7 +1,7 @@
 import React from 'react'
-import { Sparkles, ArrowRight, Clock, Flame, Star, CheckCircle2, ShieldCheck } from 'lucide-react'
+import { Sparkles, ArrowRight, Clock, Flame, Star, CheckCircle2, ShieldCheck, Truck } from 'lucide-react'
 
-export function Hero({ onOpenOrderForm, onScrollToMenu }) {
+export function Hero({ onOpenOrderForm, onScrollToMenu, onOpenTrack }) {
   return (
     <section className="relative overflow-hidden pt-6 pb-12 sm:pt-10 sm:pb-20 lg:pt-14 lg:pb-24 border-b border-neutral-800">
       {/* Background ambient lighting */}
@@ -73,7 +73,16 @@ export function Hero({ onOpenOrderForm, onScrollToMenu }) {
                 onClick={onScrollToMenu}
                 className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 hover:border-amber-500/40 text-neutral-200 font-bold text-sm sm:text-base flex items-center justify-center transition cursor-pointer"
               >
-                <span>Explore Full Menu</span>
+                <span>Explore Menu</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onOpenTrack}
+                className="w-full sm:w-auto px-5 py-3.5 sm:py-4 rounded-xl bg-neutral-900/90 hover:bg-neutral-800 border border-neutral-700 hover:border-amber-500/40 text-neutral-200 font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition cursor-pointer"
+              >
+                <Truck className="w-4 h-4 text-amber-400" />
+                <span>Track Order</span>
               </button>
             </div>
 

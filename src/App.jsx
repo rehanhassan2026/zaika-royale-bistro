@@ -6,6 +6,7 @@ import { Menu } from './components/Menu'
 import { OrderSection } from './components/OrderSection'
 import { OrderFormModal } from './components/OrderFormModal'
 import { OrderSuccessModal } from './components/OrderSuccessModal'
+import { TrackOrderModal } from './components/TrackOrderModal'
 import { Footer } from './components/Footer'
 import { createOrder } from './services/orderService'
 import { sendOrderToGmail } from './services/emailService'
@@ -22,6 +23,13 @@ export function App() {
   const [latestOrder, setLatestOrder] = useState(null)
   const [emailStatus, setEmailStatus] = useState(null)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const [isTrackModalOpen, setIsTrackModalOpen] = useState(false)
+  const [trackInitialQuery, setTrackInitialQuery] = useState('')
+
+  const handleOpenTrack = (query = '') => {
+    setTrackInitialQuery(query)
+    setIsTrackModalOpen(true)
+  }
 
   // Cart operations
   const handleAddToCart = (dish) => {
@@ -106,12 +114,14 @@ export function App() {
         cartCount={cartCount}
         cartTotal={cartTotal}
         onOpenCart={scrollToOrderForm}
+        onOpenTrack={() => handleOpenTrack('')}
       />
 
       {/* Hero Section */}
       <Hero
         onOpenOrderForm={scrollToOrderForm}
         onScrollToMenu={scrollToMenu}
+        onOpenTrack={() => handleOpenTrack('')}
       />
 
       {/* Why Choose Us Feature Ribbon */}
@@ -182,6 +192,7 @@ export function App() {
       {/* Footer */}
       <Footer
         onOpenOrderForm={scrollToOrderForm}
+        onOpenTrack={() => handleOpenTrack('')}
       />
 
       {/* Modals */}
@@ -203,6 +214,21 @@ export function App() {
           setLatestOrder(null)
           setEmailStatus(null)
           window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
+        onTrackOrder={(refCode) => {
+          setIsSuccessModalOpen(false)
+          setLatestOrder(null)
+          setEmailStatus(null)
+          handleOpenTrack(refCode)
+        }}
+      />
+
+      <TrackOrderModal
+        isOpen={isTrackModalOpen}
+        initialQuery={trackInitialQuery}
+        onClose={() => {
+          setIsTrackModalOpen(false)
+          setTrackInitialQuery('')
         }}
       />
 

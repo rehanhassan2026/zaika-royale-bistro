@@ -5,13 +5,15 @@ export async function sendOrderToGmail(order) {
     .map((item, index) => `${index + 1}. ${item.name} x ${item.quantity} (Rs. ${item.price} each = Rs. ${item.price * item.quantity})`)
     .join('\n')
 
-  const emailSubject = `🍽️ New Order #${order.id ? (typeof order.id === 'string' && order.id.length > 8 ? order.id.slice(0, 8).toUpperCase() : order.id) : 'ORD-' + Date.now().toString().slice(-5)} - ${order.name} (Rs. ${order.total.toLocaleString()})`
+  const refCode = order.ref_id || (order.id ? (typeof order.id === 'string' && order.id.length > 8 ? order.id.slice(0, 8).toUpperCase() : order.id) : 'ZR-' + Date.now().toString().slice(-5))
+  const emailSubject = `🍽️ New Order #${refCode} - ${order.name} (Rs. ${order.total.toLocaleString()})`
 
   const payload = {
     _subject: emailSubject,
     _template: 'table',
     _captcha: 'false',
     _replyto: 'customer@restaurant.com',
+    'Order Reference ID': refCode,
     'Restaurant Name': 'Zaika Royale Bistro',
     'Customer Name': order.name,
     'Customer Phone': order.phone,

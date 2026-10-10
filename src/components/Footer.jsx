@@ -1,7 +1,7 @@
 import React from 'react'
-import { UtensilsCrossed, Mail, Phone, MapPin, Clock, Heart } from 'lucide-react'
+import { UtensilsCrossed, Mail, Phone, MapPin, Clock, Heart, Truck } from 'lucide-react'
 
-export function Footer({ onOpenOrderForm }) {
+export function Footer({ onOpenOrderForm, onOpenTrack }) {
   return (
     <footer id="contact" className="bg-neutral-950 border-t border-neutral-800 text-neutral-400 text-xs">
       
@@ -33,6 +33,7 @@ export function Footer({ onOpenOrderForm }) {
               <li><a href="#menu" className="hover:text-amber-400 transition">Our Menu</a></li>
               <li><a href="#why-us" className="hover:text-amber-400 transition">Why Choose Us</a></li>
               <li><button onClick={onOpenOrderForm} className="hover:text-amber-400 transition cursor-pointer text-left">Order Online Now</button></li>
+              <li><button onClick={onOpenTrack} className="hover:text-amber-400 transition cursor-pointer text-left flex items-center gap-1.5"><Truck className="w-3.5 h-3.5 text-amber-400" /><span>Track Order Status</span></button></li>
               <li><a href="#contact" className="hover:text-amber-400 transition">Contact &amp; Location</a></li>
             </ul>
           </div>
