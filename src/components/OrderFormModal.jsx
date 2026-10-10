@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, ShoppingBag, Plus, Minus, Trash2, Send, ShieldCheck, Mail, Database, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { X, ShoppingBag, Plus, Minus, Trash2, Send, ShieldCheck, Mail, Database, AlertCircle, CheckCircle2, Clock } from 'lucide-react'
 import { DISHES } from '../data/dishes'
 import { TARGET_GMAIL } from '../config/supabase'
 
